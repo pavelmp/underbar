@@ -468,7 +468,6 @@
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
     var lastCalled;
-    var toCall = wait;
     var deferTimer;
     var args = Array.prototype.slice.call(arguments,2);
 
@@ -476,17 +475,14 @@
       var context = this;
       var now = +new Date;
 
-      if (lastCalled && now < lastCalled + toCall) {
-        // If called too soon, wait the time needed to reach required delay and then call;
+      if (lastCalled && now < lastCalled + wait) {
         clearTimeout(deferTimer);
         deferTimer = setTimeout(function () {
-          toCall = now-lastCalled;
-          lastCalled = now+toCall;
+          lastCalled = now;
           func.apply(context, args);
-        }, toCall);
+        }, wait);
       } else {
         lastCalled = now;
-        toCall = wait;
         func.apply(context, args);
       }
     };
